@@ -77,6 +77,25 @@
     drawBall();
     x += dx;
     y += dy;
+
+    // // checking for bouncing of the left and right of the ball
+    // if(x + dx > canvas.width || x + dx < 0) {
+    // dx = -dx;
+    // }
+    //
+    // // checking for bouncing of the top and bottom of the ball
+    // if(y + dy > canvas.height || y + dy < 0) {
+    // dy = -dy;
+    // }
+    //if we follow this the ball will keep bouncing off
+    //it is because we are using center of the ball, instead we should use circumference
+    //adjusting that
+    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+    }
+    if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
+    dy = -dy;
+    }
   }
   setInterval(draw, 10);
 
