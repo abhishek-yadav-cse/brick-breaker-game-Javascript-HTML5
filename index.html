@@ -114,6 +114,11 @@
 
   var score = 0;
 
+
+  //giving player some lives
+  var lives = 3;
+
+
   function drawBall() {
     ctx.beginPath();
     //ctx.arc(x, y, 10, 0, Math.PI*2);
@@ -186,6 +191,7 @@
     drawBall();
     drawPaddle();
     drawScore();
+    drawLives();
     collisionDetection();
 
     x += dx;
@@ -230,8 +236,25 @@
         dy = -dy;
     }
     else {
-        alert("GAME OVER");
-        document.location.reload();
+        // alert("GAME OVER");
+        // document.location.reload();
+
+
+        //when the ball hits the bottom edge of the screen, we're subtracting one life from the lives variable.
+        //If there are no lives left, the game is lost; if there are still some lives left, then the position of the ball and the paddle are reset, along with the movement of the ball.
+
+        lives--;
+        if(!lives) {
+          alert("GAME OVER");
+          document.location.reload();
+        }
+        else {
+          x = canvas.width/2;
+          y = canvas.height-30;
+          dx = 2;
+          dy = -2;
+          paddleX = (canvas.width-paddleWidth)/2;
+        }
     }
 }
     //If the ball hits the bottom edge of the Canvas we need to check whether it hits the paddle .
@@ -255,6 +278,10 @@
     else if(leftPressed && paddleX > 0) {
     paddleX -= 7;
     }
+
+    x += dx;
+    y += dy;
+    requestAnimationFrame(draw);
   }
 
   //event listners for key press
@@ -375,8 +402,16 @@
     ctx.fillText("Score: "+score, 8, 20);
   }
 
+  //Drawing the life counter looks almost the same as drawing the score counter
+  function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+}
 
-  setInterval(draw, 10);
+
+  //setInterval(draw, 10);
+  draw();
 
 </script>
 
