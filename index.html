@@ -151,15 +151,28 @@
   function drawBricks() {
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
-            var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-            var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-            bricks[c][r].x = brickX;
-            bricks[c][r].y = brickY;
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
+            // var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+            // var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+            // bricks[c][r].x = brickX;
+            // bricks[c][r].y = brickY;
+            // ctx.beginPath();
+            // ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            // ctx.fillStyle = "#0095DD";
+            // ctx.fill();
+            // ctx.closePath();
+
+            //check the value of each brick's status property in the drawBricks() function before drawing it — if status is 1, then draw it, but if it's 0, then it was hit by the ball and we don't want it on the screen anymore.
+            if(bricks[c][r].status == 1) {
+              var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+              var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+              bricks[c][r].x = brickX;
+              bricks[c][r].y = brickY;
+              ctx.beginPath();
+              ctx.rect(brickX, brickY, brickWidth, brickHeight);
+              ctx.fillStyle = "#0095DD";
+              ctx.fill();
+              ctx.closePath();
+            }
         }
       }
   }
@@ -169,6 +182,8 @@
     drawBricks();
     drawBall();
     drawPaddle();
+    collisionDetection();
+
     x += dx;
     y += dy;
 
@@ -263,6 +278,70 @@
         leftPressed = false;
     }
   }
+
+
+
+  //creating a collision detection function that will loop through all the bricks and compare every single brick's position with the ball's coordinates as each frame is drawn
+
+  // function collisionDetection() {
+  //   for(var c=0; c<brickColumnCount; c++) {
+  //       for(var r=0; r<brickRowCount; r++) {
+  //           var b = bricks[c][r];
+  //           // calculations
+  //       }
+  //   }
+  // }
+
+  //If the center of the ball is inside the coordinates of one of our bricks, we'll change the direction of the ball.
+  //For the center of the ball to be inside the brick, all four of the following statements need to be true:
+    //The x position of the ball is greater than the x position of the brick.
+    //The x position of the ball is less than the x position of the brick plus its width.
+    //The y position of the ball is greater than the y position of the brick.
+    //The y position of the ball is less than the y position of the brick plus its height.
+
+  //   function collisionDetection() {
+  //   for(var c=0; c<brickColumnCount; c++) {
+  //       for(var r=0; r<brickRowCount; r++) {
+  //           var b = bricks[c][r];
+  //           if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+  //               dy = -dy;
+  //           }
+  //       }
+  //   }
+  // }
+
+  //The above code will work as desired and the ball changes its direction.
+  //The problem is that the bricks are staying where they are. We have to figure out a way to get rid of the ones we've already hit with the ball.
+  //We can do that by adding an extra parameter to indicate whether we want to paint each brick on the screen or not.
+  //In the part of the code where we initialize the bricks, let's add a status property to each brick object.
+
+  var bricks = [];
+  for(var c=0; c<brickColumnCount; c++) {
+    bricks[c] = [];
+    for(var r=0; r<brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
+    }
+  }
+
+  //need to involve the brick status property in the collisionDetection() function:
+  //if the brick is active (its status is 1) we will check whether the collision happens;
+  //if a collision does occur we'll set the status of the given brick to 0 so it won't be painted on the screen.
+  //Update your collisionDetection() function
+
+  function collisionDetection() {
+    for(var c=0; c<brickColumnCount; c++) {
+        for(var r=0; r<brickRowCount; r++) {
+            var b = bricks[c][r];
+            if(b.status == 1) {
+                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                    dy = -dy;
+                    b.status = 0;
+                }
+            }
+        }
+    }
+  }
+
   setInterval(draw, 10);
 
 </script>
