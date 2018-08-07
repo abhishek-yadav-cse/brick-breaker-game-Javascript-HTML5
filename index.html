@@ -261,6 +261,10 @@
   document.addEventListener("keydown", keyDownHandler, false);
   document.addEventListener("keyup", keyUpHandler, false);
 
+  //listening for mouse movement
+  document.addEventListener("mousemove", mouseMoveHandler, false);
+
+
   //When the keydown event is fired on any of the keys on your keyboard (when they are pressed), the keyDownHandler() function will be executed.
   //The same pattern is true for the second listener: keyup events will fire the keyUpHandler() function (when the keys stop being pressed).
   //Both functions take an event as a parameter, represented by the e variable.
@@ -283,6 +287,17 @@
     }
   }
 
+  //anchoring the paddle movement to the mouse movement
+  function mouseMoveHandler(e) {
+      var relativeX = e.clientX - canvas.offsetLeft;
+      if(relativeX > 0 && relativeX < canvas.width) {
+          paddleX = relativeX - paddleWidth/2;
+      }
+  }
+  //we first work out a relativeX value, which is equal to the horizontal mouse position in the viewport (e.clientX) minus the distance between the left edge of the canvas and left edge of the viewport (canvas.offsetLeft) —
+  // effectively this is equal to the distance between the canvas left edge and the mouse pointer.
+  //If the relative X pointer position is greater than zero and lower than the Canvas width, the pointer is within the Canvas boundaries, and the paddleX position (anchored on the left edge of the paddle) is set to the relativeX value minus half the width of the paddle,
+  //so that the movement will actually be relative to the middle of the paddle.
 
 
   //creating a collision detection function that will loop through all the bricks and compare every single brick's position with the ball's coordinates as each frame is drawn
